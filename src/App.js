@@ -2,11 +2,15 @@ import './App.css'
 import { Routes, Route } from 'react-router-dom'
 
 import { createTheme, ThemeProvider } from '@mui/material/styles'
+import CssBaseline from '@mui/material/CssBaseline'
+import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Link from '@mui/material/Link'
-
+import Navigator from './Navigator'
+import Header from './Header'
+import Overview from './Overview'
+import Subscriptions from './Subscriptions'
 import Private from './Private'
-import Home from './Home'
 
 function Copyright() {
   return (
@@ -168,11 +172,29 @@ const drawerWidth = 256
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <Routes>
-        <Route path="/private" element={<Private />} />
-        <Route path="/" element={<Home />} />
-      </Routes>
-      <Copyright />
+      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+        <CssBaseline />
+        <Box
+          component="nav"
+          sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        >
+          <Navigator
+            PaperProps={{ style: { width: drawerWidth } }}
+            sx={{ display: { sm: 'block', xs: 'none' } }}
+          />
+        </Box>
+        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+          <Header />
+          <Routes>
+            <Route path="/" element={<Overview />} />
+            <Route path="/subscriptions" element={<Subscriptions />} />
+            <Route path="/private" element={<Private />} />
+          </Routes>
+          <Box component="footer" sx={{ p: 2, bgcolor: '#eaeff1' }}>
+            <Copyright />
+          </Box>
+        </Box>
+      </Box>
     </ThemeProvider>
   )
 }
