@@ -1,34 +1,31 @@
 import './App.css'
+import { useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
+
+import {
+  useAuth,
+  useLoginWithRedirect,
+  useTenantsState,
+} from '@frontegg/react'
+import { FronteggContext } from '@frontegg/rest-api'
+import { useNavigate } from 'react-router-dom'
 
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import Link from '@mui/material/Link'
 import Navigator from './Navigator'
 import Header from './Header'
 import Overview from './Overview'
 import Subscriptions from './Subscriptions'
 import Private from './Private'
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://www.jeis.co.jp">
-        JREast Information Systems Company
-      </Link>{' '}
-      {new Date().getFullYear()}.
-    </Typography>
-  )
-}
+import { HeaderProvider } from './HeaderContext'
+import Copyright from './Copyright'
 
 let theme = createTheme({
   palette: {
     primary: {
       light: '#63ccff',
-      main: '#009be5',
+      main: '#008803',
       dark: '#006db3',
     },
   },
@@ -131,7 +128,7 @@ theme = {
       styleOverrides: {
         root: {
           '&.Mui-selected': {
-            color: '#4fc3f7',
+            color: '#65ce67',
           },
         },
       },
@@ -170,31 +167,67 @@ theme = {
 const drawerWidth = 256
 
 function App() {
+  const { user, isAuthenticated } = useAuth()
+  console.log('user - ', user)
+  console.log('isAuthenticated - ', isAuthenticated)
+
+  const loginWithRedirect = useLoginWithRedirect()
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      console.log('user is not logged-on. going to loginWithRedirect')
+      localStorage.setItem('_REDIRECT_AFTER_LOGIN_', window.location.pathname)
+      loginWithRedirect()
+    }
+  }, [isAuthenticated, loginWithRedirect])
+
+  const originalRoute = localStorage.getItem('_REDIRECT_AFTER_LOGIN_')
+  console.log('originalRoute - ', originalRoute)
+
+  const navigate = useNavigate()
+  if (isAuthenticated && originalRoute) {
+    navigate(originalRoute)
+    localStorage.removeItem('_REDIRECT_AFTER_LOGIN_')
+  }
+
+  const token = FronteggContext.getAccessToken()
+  console.log('token - ', token)
+  const tenantsState = useTenantsState()
+  console.log('tenants - ', tenantsState?.tenants)
+
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-        <CssBaseline />
-        <Box
-          component="nav"
-          sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-        >
-          <Navigator
-            PaperProps={{ style: { width: drawerWidth } }}
-            sx={{ display: { sm: 'block', xs: 'none' } }}
-          />
-        </Box>
-        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-          <Header />
-          <Routes>
-            <Route path="/" element={<Overview />} />
-            <Route path="/subscriptions" element={<Subscriptions />} />
-            <Route path="/private" element={<Private />} />
-          </Routes>
-          <Box component="footer" sx={{ p: 2, bgcolor: '#eaeff1' }}>
-            <Copyright />
+      {isAuthenticated ? (
+        <>
+          <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+            <CssBaseline />
+            <Box
+              component="nav"
+              sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+            >
+              <Navigator
+                PaperProps={{ style: { width: drawerWidth } }}
+                sx={{ display: { sm: 'block', xs: 'none' } }}
+              />
+            </Box>
+            <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+              <HeaderProvider>
+                <Header />
+                <Routes>
+                  <Route path="/" element={<Overview />} />
+                  <Route path="/subscriptions" element={<Subscriptions />} />
+                  <Route path="/private" element={<Private />} />
+                </Routes>
+              </HeaderProvider>
+              <Box component="footer" sx={{ p: 2, bgcolor: '#eaeff1' }}>
+                <Copyright />
+              </Box>
+            </Box>
           </Box>
-        </Box>
-      </Box>
+        </>
+      ) : (
+        <></>
+      )}
     </ThemeProvider>
   )
 }

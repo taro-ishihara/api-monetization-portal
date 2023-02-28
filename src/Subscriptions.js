@@ -1,11 +1,4 @@
 import { useEffect } from 'react'
-import {
-  useAuth,
-  useLoginWithRedirect,
-  useTenantsState,
-} from '@frontegg/react'
-import { FronteggContext } from '@frontegg/rest-api'
-import { useNavigate } from 'react-router-dom'
 
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
@@ -20,33 +13,14 @@ import SearchIcon from '@mui/icons-material/Search'
 import RefreshIcon from '@mui/icons-material/Refresh'
 
 import Products from './Products'
+import { useSetHeader } from './HeaderContext'
 
-function Home() {
-  const { user, isAuthenticated } = useAuth()
-  const tenantsState = useTenantsState()
-  const loginWithRedirect = useLoginWithRedirect()
-  const navigate = useNavigate()
-
-  console.log('user - ', user)
-  console.log('isAuthenticated - ', isAuthenticated)
-  console.log('tenants - ', tenantsState?.tenants)
+function Subscriptions() {
+  const setHeader = useSetHeader()
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      console.log('user is not logged-on. going to loginWithRedirect')
-      localStorage.setItem('_REDIRECT_AFTER_LOGIN_', window.location.pathname)
-      loginWithRedirect()
-    }
-  }, [isAuthenticated, loginWithRedirect])
-
-  const originalRoute = localStorage.getItem('_REDIRECT_AFTER_LOGIN_')
-  console.log('originalRoute - ', originalRoute)
-  const token = FronteggContext.getAccessToken()
-  console.log('token - ', token)
-  if (isAuthenticated && originalRoute) {
-    navigate(originalRoute)
-    localStorage.removeItem('_REDIRECT_AFTER_LOGIN_')
-  }
+    setHeader({title: 'Subscriptions'})
+  }, [setHeader])
 
   return (
     <div className="App">
@@ -90,28 +64,9 @@ function Home() {
           No users for this project yet
         </Typography>
       </Paper>
-      {isAuthenticated ? (
-        <div>
-          <div>
-            <span>Logged in as: {user?.name}</span>
-          </div>
-          <div>
-            <button onClick={() => alert(user.accessToken)}>
-              What is my access token?
-            </button>
-          </div>
-          <Products />
-        </div>
-      ) : (
-        <div>
-          <button onClick={() => loginWithRedirect()}>Click me to login</button>
-          <button onClick={() => navigate('/private')}>
-            Go to private route
-          </button>
-        </div>
-      )}
+      <Products />
     </div>
   )
 }
 
-export default Home
+export default Subscriptions
