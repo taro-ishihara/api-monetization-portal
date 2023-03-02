@@ -14,6 +14,7 @@ import Typography from '@mui/material/Typography'
 
 import { useHeader } from './HeaderContext'
 import UserMenu from './UserMenu'
+import { NavLink } from 'react-router-dom'
 
 const lightColor = 'rgba(255, 255, 255, 0.7)'
 
@@ -75,8 +76,11 @@ function Header() {
                 variant="outlined"
                 color="inherit"
                 size="small"
+                component={NavLink}
+                to="https://documenter.getpostman.com/view/26046786/2s93CUG9aw"
+                target="_blank"
               >
-                Web setup
+                Documentation
               </Button>
             </Grid>
             <Grid item>

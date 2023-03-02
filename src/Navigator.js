@@ -15,6 +15,7 @@ import DataUsageIcon from '@mui/icons-material/DataUsage'
 import ReceiptIcon from '@mui/icons-material/Receipt'
 import QueryStatsIcon from '@mui/icons-material/QueryStats'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import ListIcon from '@mui/icons-material/List'
 
 const categories = [
   {
@@ -29,6 +30,7 @@ const categories = [
     id: 'Quality',
     children: [
       { id: 'Status', icon: <CheckCircleIcon />, to: '/status' },
+      { id: 'Logs', icon: <ListIcon />, to: '/logs' },
       { id: 'Analytics', icon: <QueryStatsIcon />, to: '/analytics' },
     ],
   },

@@ -17,6 +17,9 @@ import Navigator from './Navigator'
 import Header from './Header'
 import Overview from './Overview'
 import Subscriptions from './Subscriptions'
+import Usage from './Usage'
+import Logs from './Logs'
+import Analytics from './Analytics'
 import Private from './Private'
 import { HeaderProvider } from './HeaderContext'
 import Copyright from './Copyright'
@@ -216,6 +219,9 @@ function App() {
                 <Routes>
                   <Route path="/" element={<Overview />} />
                   <Route path="/subscriptions" element={<Subscriptions />} />
+                  <Route path="/usage" element={<Usage />} />
+                  <Route path="/logs" element={<Logs />} />
+                  <Route path="/analytics" element={<Analytics />} />
                   <Route path="/private" element={<Private />} />
                 </Routes>
               </HeaderProvider>
