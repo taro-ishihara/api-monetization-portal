@@ -1,5 +1,7 @@
 import { FronteggContext } from '@frontegg/rest-api'
 
+import Button from '@mui/material/Button'
+
 const onClickSubscribe = async (productId) => {
   try {
     const response = await fetch(
@@ -20,17 +22,19 @@ const onClickSubscribe = async (productId) => {
     console.log('error')
   }
 }
-const SubscribeButton = ({product, subscribed, setSubscribed}) => {
+const SubscribeButton = ({ product, subscribeToggle }) => {
   return (
     <>
-      <button
+      <Button
         onClick={async () => {
           await onClickSubscribe(product.id)
-          setSubscribed(!subscribed)
+          subscribeToggle()
         }}
+        variant="contained"
+        sx={{ mr: 1 }}
       >
         Subscribe
-      </button>
+      </Button>
     </>
   )
 }

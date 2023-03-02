@@ -19,6 +19,7 @@ import Overview from './Overview'
 import Subscriptions from './Subscriptions'
 import Usage from './Usage'
 import Logs from './Logs'
+import Status from './Status'
 import Analytics from './Analytics'
 import Private from './Private'
 import { HeaderProvider } from './HeaderContext'
@@ -188,10 +189,12 @@ function App() {
   console.log('originalRoute - ', originalRoute)
 
   const navigate = useNavigate()
-  if (isAuthenticated && originalRoute) {
-    navigate(originalRoute)
-    localStorage.removeItem('_REDIRECT_AFTER_LOGIN_')
-  }
+  useEffect(()=> {
+    if (isAuthenticated && originalRoute) {
+      navigate(originalRoute)
+      localStorage.removeItem('_REDIRECT_AFTER_LOGIN_')
+    }
+  }, [isAuthenticated, originalRoute, navigate])
 
   const token = FronteggContext.getAccessToken()
   console.log('token - ', token)
@@ -220,6 +223,7 @@ function App() {
                   <Route path="/" element={<Overview />} />
                   <Route path="/subscriptions" element={<Subscriptions />} />
                   <Route path="/usage" element={<Usage />} />
+                  <Route path="/status" element={<Status />} />
                   <Route path="/logs" element={<Logs />} />
                   <Route path="/analytics" element={<Analytics />} />
                   <Route path="/private" element={<Private />} />
